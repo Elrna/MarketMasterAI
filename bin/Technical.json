@@ -1,0 +1,10 @@
+{
+    "SMA": true,
+    "RSI": true,
+    "Bollinger": false,
+    "MACD": true,
+    "ADX": false,
+    "Stochastic": false,
+    "VWAP": true,
+    "Fibonacci": true
+}

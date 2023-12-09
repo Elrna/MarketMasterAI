@@ -73,28 +73,6 @@ async def update_data(symbol, interval, start, end):
         df = await fetch_ohlcv(session, symbol, interval, start_timestamp, end_timestamp)
         return df
 
-
-
-async def main(symbol, intervals):
-    retrain_df = []
-    for interval in intervals:
-        try:
-            last_timestamp = get_last_timestamp()
-            end = adjust_to_interval(datetime.utcnow())
-            if last_timestamp < end:
-                df = await update_data(symbol, interval, last_timestamp, end)
-                save_data(df, interval)
-                retrain_df.append(df)
-        except Exception as e:
-            logging.error(f"Error occurred during data update for interval {interval}: {e}")
-
-    if retrain_df:
-        combined_df = pd.concat(retrain_df, ignore_index=True)
-        combined_df.to_csv(retrain_csv, index=False)
-        logging.info(f"Data successfully updated and saved for intervals: {intervals}")
-    else:
-        logging.info("No new data to update.")
-
 # 必要なヘルパー関数の定義
 def get_last_timestamp():
     try:
@@ -115,6 +93,32 @@ def save_data(df, interval):
     df['timestamp'] = pd.to_datetime(df['timestamp']).dt.tz_localize('UTC').dt.tz_convert('Asia/Tokyo')
     df['timestamp'] = df['timestamp'].dt.strftime('%Y/%m/%d %H:%M')
     df.to_csv(csv_path, mode='a', header=False, index=False, lineterminator='\n')
+
+
+async def main(symbol, intervals):
+
+    sleep_flag = False
+
+    while True:
+        for interval in intervals:
+            try:
+                last_timestamp = get_last_timestamp()
+                end = adjust_to_interval(datetime.utcnow())
+                if last_timestamp < end:
+                    df = await update_data(symbol, interval, last_timestamp, end)
+                    save_data(df, interval)
+
+                time_diff = end - last_timestamp
+                if time_diff.total_seconds() < 300:
+                    sleep_flag = True
+
+            except Exception as e:
+                logging.error(f"Error occurred during data update for interval {interval}: {e}")
+
+        if sleep_flag:
+            logging.info("No new data to update. Sleep 5min.")
+            sleep_flag = False
+            await asyncio.sleep(300)
 
 if __name__ == "__main__":
     symbol = 'BTCUSD'

@@ -4,7 +4,6 @@ import pandas as pd
 from datetime import datetime, timedelta
 import logging
 import json
-import pytz
 
 # ロガーの設定
 logging.basicConfig(filename='D:/MarketMasterAI/Log/RealTimeBTCPrice.log',
@@ -74,7 +73,6 @@ async def update_data(symbol, interval, start, end):
         df = await fetch_ohlcv(session, symbol, interval, start_timestamp, end_timestamp)
         return df
 
-
 # 必要なヘルパー関数の定義
 def get_last_timestamp():
     try:
@@ -96,65 +94,12 @@ def save_data(df, interval):
     df['timestamp'] = df['timestamp'].dt.strftime('%Y/%m/%d %H:%M')
     df.to_csv(csv_path, mode='a', header=False, index=False, lineterminator='\n')
 
-def read_last_timestamp():
-    """
-    JSONファイルから最後のタイムスタンプを読み込む。
-    """
-    with open("D:/MarketMasterAI/bin/Last_timestamp.json", 'r') as file:
-        data = json.load(file)
-        return pd.to_datetime(data['last_timestamp'])
-
-def load_data_from_csv(file_path, start_data, end_date):
-    """
-    CSVファイルから特定の期間のデータを読み込む関数
-
-    :param file_path: CSVファイルのパス
-    :param start_date: 開始日時（文字列）
-    :param end_date: 終了日時（文字列）
-    :return: フィルタリングされたデータフレーム
-    """
-    df = pd.read_csv(file_path, parse_dates=['timestamp'])
-
-    df['timestamp'] = df['timestamp'].apply(lambda x: x.tz_localize('UTC').tz_convert('Asia/Tokyo'))
-    timestamp = pd.to_datetime(add_jst_timezone(df['timestamp']))
-    filtered_df = df[(timestamp >= start_data) & (timestamp <= end_date)]
-
-    return filtered_df
-
-def convert_utc_to_jst(utc_datetime):
-    """
-    UTCの日時を日本時間（JST）に変換する。
-
-    :param utc_datetime: UTCの日時（datetimeオブジェクト）
-    :return: JSTに変換された日時（datetimeオブジェクト）
-    """
-    # UTCとJSTのタイムゾーンを定義
-    utc_zone = pytz.timezone('UTC')
-    jst_zone = pytz.timezone('Asia/Tokyo')
-
-    # UTC日時をタイムゾーン付きの日時に変換
-    utc_datetime = utc_zone.localize(utc_datetime)
-
-    # JSTに変換
-    jst_datetime = utc_datetime.astimezone(jst_zone)
-
-    return jst_datetime
-
-def add_jst_timezone(naive_datetime):
-    """
-    tz-naiveな日時にJSTのタイムゾーン情報を付加する。
-    
-    :param naive_datetime: タイムゾーン情報を持たない日時（datetimeオブジェクト）
-    :return: JSTタイムゾーン情報を持つ日時（datetimeオブジェクト）
-    """
-    jst_zone = pytz.timezone('Asia/Tokyo')
-    localized_datetime = jst_zone.localize(naive_datetime)
-    return pd.Timestamp(localized_datetime)
-
 
 async def main(symbol, intervals):
+
+    sleep_flag = False
+
     while True:
-        sleep_flg = True
         for interval in intervals:
             try:
                 last_timestamp = get_last_timestamp()
@@ -162,20 +107,18 @@ async def main(symbol, intervals):
                 if last_timestamp < end:
                     df = await update_data(symbol, interval, last_timestamp, end)
                     save_data(df, interval)
-                    sleep_flg = False
 
-                    lstm_last_timestamp = add_jst_timezone(read_last_timestamp())
-                    dataset_last_timestamp = convert_utc_to_jst(last_timestamp)
-                    if lstm_last_timestamp < dataset_last_timestamp:
-                        retrain_csvdata = load_data_from_csv(csv_path, lstm_last_timestamp, dataset_last_timestamp)
-                        retrain_csvdata.to_csv(retrain_csv, mode='w', index=False)
+                time_diff = end - last_timestamp
+                if time_diff.total_seconds() < 300:
+                    sleep_flag = True
 
             except Exception as e:
                 logging.error(f"Error occurred during data update for interval {interval}: {e}")
 
-        if sleep_flg:
+        if sleep_flag:
+            logging.info("No new data to update. Sleep 5min.")
+            sleep_flag = False
             await asyncio.sleep(300)
-
 
 if __name__ == "__main__":
     symbol = 'BTCUSD'

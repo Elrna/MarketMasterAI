@@ -12,6 +12,8 @@
         "4hr_BTC_price" : "D:/MarketMasterAI/Def/BTCUSDT_4H.csv",
         "1d_BTC_price" : "D:/MarketMasterAI/Def/BTCUSDT_1D.csv",
 
+        "clean_BTC_price" : "D:/MarketMasterAI/Def/Clean_BTCUSDT_5T.csv",
+
         "5min_training": "D:/MarketMasterAI/Def/Standrd_BTCUSDT_5T.csv",
         "15min_training": "D:/MarketMasterAI/Def/Standrd_BTCUSDT_15T.csv",
         "30min_training": "D:/MarketMasterAI/Def/Standrd_BTCUSDT_30T.csv",

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+</head>
+<body>
+  <nav>
+    <ul>
+      <li class="nav-item" id="home">Home</li>
+      <li class="nav-item" id="price">Price</li>
+      <li class="nav-item" id="analysis">Analysis</li>
+      <li class="nav-item" id="auto">Auto</li>
+      <li class="nav-item" id="portfolio">Portfolio</li>
+    </ul>
+  </nav>
+
+  <!-- Homeコンテンツ -->
+  <div id="content-home" class="content-section">
+    <!-- BTCUSDT Widget -->
+    <div id="btcusdt-widget" class="widget">
+      <div class="widget-header">BTCUSDT</div>
+      <div class="widget-price">Nan</div>
+      <div class="widget-change">Nan</div>
+    </div>
+
+    <!-- dummy1 wedget-->
+    <div id="dummy1-widget" class="widget">
+      <div class="widget-header">dummy1</div>
+      <div class="widget-price">2070.56</div>
+      <div class="widget-change">0.89%</div>
+    </div>
+
+    <!-- dummy2 wedget-->
+    <div id="dummy2-widget" class="widget">
+      <div class="widget-header">dummy2</div>
+      <div class="widget-price">1200000</div>
+      <div class="widget-change">100%</div>
+    </div>
+  </div>
+
+
+
+  <!-- Priceコンテンツ-->
+  <div id="content-price" class="content-section">
+    Price Content
+  </div>
+
+  <!-- Analysisコンテンツ -->
+  <div id="content-analysis" class="content-section">
+    Analysis Content
+  </div>
+
+  <!-- Autoコンテンツ -->
+  <div id="content-auto" class="content-section">
+    Auto Content
+  </div>
+
+  <!-- Portfolioコンテンツ -->
+  <div id="content-portfolio" class="content-section">
+    Portfolio Content
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

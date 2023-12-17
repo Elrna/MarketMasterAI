@@ -1,0 +1,140 @@
+/* styles.css */
+body {
+    background-color: black; /* 背景色を黒に設定 */
+    color: white; /* 文字色を白に設定 */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  nav {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex; /* Flexboxコンテナとして設定 */
+    justify-content: center; /* 中央揃え */
+    align-items: center; /* アイテムを垂直方向に中央揃え */
+    margin-top: 5px;
+  }
+  
+  nav ul {
+    display: flex; /* Flexboxコンテナとして設定 */
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    width: 100%; /* 全幅を取るように設定 */
+    justify-content: space-around; /* アイテム間に等しいスペースを配置 */
+  }
+  
+  nav ul li {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  nav ul li:hover {
+    background-color: #111;
+  }
+  
+  #chart-container {
+    margin: 20px;
+  }
+  
+  #news-container {
+    margin: 20px;
+  }
+  
+  .nav-item {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: font-size 0.3s; /* アニメーション効果 */
+    cursor: default;
+  }
+  
+  .nav-item:hover {
+    background-color: #111; /* ホバー時の背景色 */
+  }
+  
+  /* クリックされたナビゲーション項目に適用するクラス */
+  .active-nav-item {
+    font-size: 20px; /* 文字を大きくする */
+    text-decoration: underline; /* 下線を付ける */
+  } 
+
+  #content-home {
+    display: flex;
+    justify-content: space-around; /* ウィジェット間に等間隔を取る */
+    align-items: center;
+    flex-wrap: nowrap; /* アイテムが折り返さないようにする */
+    width: 100%; /* コンテナの幅を全幅に設定 */
+    max-width: 1800px; /* 必要に応じて調整する */
+    margin: 20px auto; /* 上下のマージンを設定し、左右は自動マージンで中央揃えにする */
+  }
+/* ウィジェットのスタイル */
+.widget {
+  flex: 0 0 auto; /* アイテムのサイズを固定する */
+  display: flex;
+  flex-direction: column; /* アイテムを縦方向に並べる */
+  justify-content: center; /* 中央揃え */
+  align-items: center; /* アイテムを中央揃えにする */
+  background-color: #121212;
+  color: #ffffff;
+  border-radius: 20px; /* 角の丸みを増やす */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px; /* 周囲のマージンを設定 */
+  width: 150px; /* 幅を設定 */
+  height: 150px; /* 高さを設定 */
+}
+
+
+.widget-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.widget-price {
+  font-size: 28px; /* 文字サイズを大きくする */
+  margin: 5px 0; /* 上下のマージンを設定 */
+  font-weight: bold; /* 太字にする */
+}
+
+.widget-change {
+  font-size: 14px; /* 文字サイズを調整する */
+  padding: 5px 10px; /* パディングを設定 */
+  border-radius: 10px; /* 角の丸みを設定 */
+  margin: 5px 0; /* 上下のマージンを設定 */
+}
+
+
+/* 変化率のポジティブとネガティブの色分け */
+.widget-change.positive {
+  background-color: #4caf50; /* グリーン */
+}
+
+.widget-change.negative {
+  background-color: #f44336; /* レッド */
+}
+
+.content-section {
+  display: flex;
+  justify-content: center; /* 中央揃え */
+  align-items: center; /* アイテムを垂直方向に中央揃えにする */
+  flex-wrap: nowrap; /* アイテムが折り返さないようにする */
+}
+
+
+  /* styles.css */
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+  /* その他必要なスタイルを追加 */
+  

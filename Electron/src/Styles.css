@@ -1,18 +1,20 @@
-/* styles.css */
+
+/* 基本のスタイル */
 body {
     background-color: black; /* 背景色を黒に設定 */
     color: white; /* 文字色を白に設定 */
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
   
+  /* ナビゲーションのスタイル */
   nav {
     background-color: rgba(0, 0, 0, 0.5);
     display: flex; /* Flexboxコンテナとして設定 */
     justify-content: center; /* 中央揃え */
     align-items: center; /* アイテムを垂直方向に中央揃え */
-    margin-top: 5px;
+    margin-top: 30px;
   }
   
   nav ul {
@@ -20,7 +22,7 @@ body {
     padding: 0;
     margin: 0;
     list-style-type: none;
-    width: 100%; /* 全幅を取るように設定 */
+    width: 70%; /* 全幅を取るように設定 */
     justify-content: space-around; /* アイテム間に等しいスペースを配置 */
   }
   
@@ -40,8 +42,10 @@ body {
     margin: 20px;
   }
   
-  #news-container {
-    margin: 20px;
+  .news-container {
+    width: 100%;
+    margin-top: 45px; /* ウィジェットコンテナから45pxのスペースを設ける */
+  
   }
   
   .nav-item {
@@ -64,17 +68,25 @@ body {
     text-decoration: underline; /* 下線を付ける */
   } 
 
+  /* ウィジェットコンテナ全体のスタイル */
   #content-home {
+    padding-left: 10%;
+    padding-right: 10%;
     display: flex;
-    justify-content: space-around; /* ウィジェット間に等間隔を取る */
+    flex-direction: column;
     align-items: center;
-    flex-wrap: nowrap; /* アイテムが折り返さないようにする */
-    width: 100%; /* コンテナの幅を全幅に設定 */
-    max-width: 1800px; /* 必要に応じて調整する */
-    margin: 20px auto; /* 上下のマージンを設定し、左右は自動マージンで中央揃えにする */
+    width: 100%;
   }
-/* ウィジェットのスタイル */
+
+  .widgets-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+/* ウィジェット単体のスタイル */
 .widget {
+
+  float: left;
   flex: 0 0 auto; /* アイテムのサイズを固定する */
   display: flex;
   flex-direction: column; /* アイテムを縦方向に並べる */
@@ -85,7 +97,7 @@ body {
   border-radius: 20px; /* 角の丸みを増やす */
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 10px; /* 周囲のマージンを設定 */
+  margin: 40px; /* 周囲のマージンを設定 */
   width: 150px; /* 幅を設定 */
   height: 150px; /* 高さを設定 */
 }
@@ -100,6 +112,7 @@ body {
   font-size: 28px; /* 文字サイズを大きくする */
   margin: 5px 0; /* 上下のマージンを設定 */
   font-weight: bold; /* 太字にする */
+  color: #4caf50;
 }
 
 .widget-change {
@@ -107,6 +120,8 @@ body {
   padding: 5px 10px; /* パディングを設定 */
   border-radius: 10px; /* 角の丸みを設定 */
   margin: 5px 0; /* 上下のマージンを設定 */
+  background-color: #4caf50;
+  color: white;
 }
 
 
@@ -115,9 +130,18 @@ body {
   background-color: #4caf50; /* グリーン */
 }
 
+.widget-price.positive {
+  color: #4caf50; /* グリーン */
+}
+
 .widget-change.negative {
   background-color: #f44336; /* レッド */
 }
+
+.widget-price.negative {
+  color: #f44336; /* レッド */
+}
+
 
 .content-section {
   display: flex;
@@ -136,5 +160,54 @@ body {
   display: block;
 }
 
-  /* その他必要なスタイルを追加 */
+
+/* Newsセクションのスタイル */
+#news-section-container {
+  position: absolute; /* 絶対位置に配置 */
+  background-color: black; /* ニュースコンテナの背景色 */
+  padding: 20px; /* ニュースコンテナのパディング */
+  margin-top: 295px; /* 上のコンテンツとの間隔 */
+  margin-left: 5%;
+  width: 70%; /* 幅を設定 */
+}
+
+#news {
+  font-size: 30px; /* ニュースの文字サイズ */
+}
+
+.news-list {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+/* Styling for each news item */
+.news-item {
+  border-bottom: 1px solid #fff; /* White line separator */
+  padding: 10px 0; /* Add padding above and below each item */
+  margin: 10px 0; /* Add some space between items */
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Align items vertically */
+}
+
+/* Styling for the news title and index */
+.news-title, .news-index {
+  margin-right: 30px; /* Add space to the right of the index and title */
+  margin-left: 30px;
+}
+
+/* Styling for the news link */
+.news-link {
+  margin-left: auto; /* Push the link to the far right */
+  text-decoration: none; /* Remove underline from links */
+  color: #fff; /* White link color */
+  font-size: 15px;
+  font-weight: 900;
+}
+
+/* You can also add hover effects for the links if you like */
+.news-link:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
   

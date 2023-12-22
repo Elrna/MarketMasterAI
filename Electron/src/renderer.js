@@ -1,9 +1,10 @@
 // renderer.js
-
+let lastPrice = 0;
 document.addEventListener('DOMContentLoaded', () => {
     
     const navItems = document.querySelectorAll('.nav-item');
     const contentSections = document.querySelectorAll('.content-section');
+
     // すべてのコンテンツセクションを非表示にする
     contentSections.forEach(section => {
         section.style.display = 'none';
@@ -43,19 +44,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //CSVデータ更新の設定
+    window.electronAPI.sendData('request-csv-data');
+
     setInterval(() => {
-        const requestCsvData = new Event('request-csv-data');
-        document.dispatchEvent(requestCsvData);
+        window.electronAPI.sendData('request-csv-data');
+        console.log('request csv data.');
+
     }, 60000);
 
-    window.electronAPI.receiveData('response-data', (data) => {
-        const lastElement = data[data.length - 1];
-        updateBTCWidget(lastElement.close);
+    window.electronAPI.receiveData('csv-data-response', (data) => {
+        console.log(data);
+        const newPrice = parseFloat(data.lastClose);
+        const targetPrice = parseFloat(data.targetData);
+
+        if (!isNaN(newPrice)) {
+            updateBTCWidget(newPrice, targetPrice);
+        }else{
+            console.log('newPrice is not a number.');
+        }
+
+
+        console.log('update BTC widget.');
     });
 
 });
 
-function updateBTCWidget(closePrice) {
+function updateBTCWidget(newPrice, targetPrice) {
     const widgetPrice = document.querySelector('.widget-price');
-    widgetPrice.textContent = closePrice;
-}
+    const changeIndicator = document.querySelector('.widget-change');
+  
+    if (widgetPrice && changeIndicator) {
+        widgetPrice.textContent = newPrice.toFixed(2); // 価格を小数点以下2桁で表示
+        changeIndicator.textContent = raito(targetPrice, newPrice).toFixed(2) + '%'; // 前日比を小数点以下2桁で表示
+
+        // 価格が変動したかどうかをチェック
+        if (newPrice !== null) {
+            if (newPrice > lastPrice) {
+                changeIndicator.classList.remove('negative');
+                widgetPrice.classList.remove('negative');
+                changeIndicator.classList.add('positive');
+                widgetPrice.classList.add('positive');
+
+            } else if (newPrice < lastPrice) {
+                changeIndicator.classList.remove('positive');
+                widgetPrice.classList.remove('positive');
+                changeIndicator.classList.add('negative');
+                widgetPrice.classList.add('negative');
+            }
+        }
+        
+      lastPrice = newPrice;
+    }
+  }
+
+  function raito(targetPrice, lastPrice){
+    console.log('targetPrice: ' + targetPrice);
+    console.log('lastPrice: ' + lastPrice);
+    return (targetPrice - lastPrice) / lastPrice * 100;
+  }

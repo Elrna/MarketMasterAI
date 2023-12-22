@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- スタイルシートのリンク -->
   <link rel="stylesheet" type="text/css" href="styles.css">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <!-- コンテンツセキュリティポリシー -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' https://fonts.googleapis.com;">
 </head>
 <body>
+
+  <!-- ナビげーションバー-->
   <nav>
     <ul>
       <li class="nav-item" id="home">Home</li>
@@ -17,29 +24,85 @@
 
   <!-- Homeコンテンツ -->
   <div id="content-home" class="content-section">
-    <!-- BTCUSDT Widget -->
-    <div id="btcusdt-widget" class="widget">
-      <div class="widget-header">BTCUSDT</div>
-      <div class="widget-price">Nan</div>
-      <div class="widget-change">Nan</div>
+
+    <!-- ウィジェットコンテナ -->
+    <div id="widget-container" class="widgets-continer">
+      <!-- BTCUSDT Widget -->
+      <div id="btcusdt-widget" class="widget">
+        <div class="widget-header">BTCUSDT</div>
+        <div class="widget-price">40000</div>
+        <div class="widget-change">0.00%</div>
+      </div>
+
+      <!-- dummy1 wedget-->
+      <div id="dummy1-widget" class="widget">
+        <div class="widget-header">dummy1</div>
+        <div class="widget-price">2070.56</div>
+        <div class="widget-change">0.89%</div>
+      </div>
+
+      <!-- dummy2 wedget-->
+      <div id="dummy2-widget" class="widget">
+        <div class="widget-header">dummy2</div>
+        <div class="widget-price">1200000</div>
+        <div class="widget-change">100%</div>
+      </div>
+
+      <!-- dummy3 wedget-->
+      <div id="dummy3-widget" class="widget">
+        <div class="widget-header">dummy3</div>
+        <div class="widget-price">0.000000</div>
+        <div class="widget-change">0.00%</div>
+      </div>
+
+      <!-- dummy4 wedget-->
+      <div id="dummy4-widget" class="widget">
+        <div class="widget-header">dummy4</div>
+        <div class="widget-price">0.000000</div>
+        <div class="widget-change">0.00%</div>
+      </div>
+
+      <!-- dummy5 wedget-->
+      <div id="dummy5-widget" class="widget">
+        <div class="widget-header">dummy5</div>
+        <div class="widget-price">0.000000</div>
+        <div class="widget-change">0.00%</div>
+      </div>
+    </div>
+    
+    <!-- Newsセクション -->
+    <div id="news-section-container" class="news-container">
+      <h2 id="news">News</h2>
+      <ul class="news-list">
+        <li class="news-item">
+          <span class="news-index">1.</span>
+          <span class="news-title">ダミータイトル1</span>
+          <a href="https://www.google.com" class="news-link" target="_blank">→</a>
+        </li>
+        <li class="news-item">
+          <span class="news-index">2.</span>
+          <span class="news-title">ダミータイトル2</span>
+          <a href="https://www.google.com" class="news-link" target="_blank">→</a>
+        </li>
+        <li class="news-item">
+          <span class="news-index">3.</span>
+          <span class="news-title">ダミータイトル3</span>
+          <a href="https://www.google.com" class="news-link" target="_blank">→</a>
+        </li>
+        <li class="news-item">
+          <span class="news-index">4.</span>
+          <span class="news-title">ダミータイトル4</span>
+          <a href="https://www.google.com" class="news-link" target="_blank">→</a>
+        </li>
+        <li class="news-item">
+          <span class="news-index">5.</span>
+          <span class="news-title">ダミータイトル5</span>
+          <a href="https://www.google.com" class="news-link" target="_blank">→</a>
+        </li>
+      </ul>
     </div>
 
-    <!-- dummy1 wedget-->
-    <div id="dummy1-widget" class="widget">
-      <div class="widget-header">dummy1</div>
-      <div class="widget-price">2070.56</div>
-      <div class="widget-change">0.89%</div>
-    </div>
-
-    <!-- dummy2 wedget-->
-    <div id="dummy2-widget" class="widget">
-      <div class="widget-header">dummy2</div>
-      <div class="widget-price">1200000</div>
-      <div class="widget-change">100%</div>
-    </div>
   </div>
-
-
 
   <!-- Priceコンテンツ-->
   <div id="content-price" class="content-section">

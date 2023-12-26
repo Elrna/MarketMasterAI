@@ -24,7 +24,6 @@ function createWindow() {
   mainWindow.loadFile('index.html');
   mainWindow.maximize();
 
-  runExe('D:/MarketMasterAI/bin/getPrice_BTCUSDT_ochlv.exe');
   
   // DevToolsを開く
   mainWindow.webContents.openDevTools();
@@ -76,6 +75,7 @@ ipcMain.on('request-csv-data', (event) => {
 });
 
 app.whenReady().then(() => {
+  //runExe('D:/MarketMasterAI/bin/getPrice_BTCUSDT_ochlv.exe');
   createWindow();
 });
 

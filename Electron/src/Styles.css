@@ -210,4 +210,14 @@ body {
   text-decoration: underline; /* Underline on hover */
 }
 
-  
+#chart-container {
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+  height: 60%;
+}
+
+#priceChart {
+  width: 100%;
+  height: 100%;
+}

@@ -1,5 +1,6 @@
-// renderer.js
+
 let lastPrice = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
     
     const navItems = document.querySelectorAll('.nav-item');
@@ -54,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.electronAPI.receiveData('csv-data-response', (data) => {
         console.log(data);
-        const newPrice = parseFloat(data.lastClose);
-        const targetPrice = parseFloat(data.targetData);
+        const newPrice = parseFloat(data.lastClose.close);
+        const targetPrice = parseFloat(data.targetData.close);
 
         if (!isNaN(newPrice)) {
             updateBTCWidget(newPrice, targetPrice);

@@ -210,14 +210,112 @@ body {
   text-decoration: underline; /* Underline on hover */
 }
 
-#chart-container {
-  margin-left: 10%;
-  margin-right: 10%;
-  width: 80%;
-  height: 60%;
+#chart-container{
+  width: 60%;
+  height: 40%;
 }
 
-#priceChart {
-  width: 100%;
+/* チャートとテキストを含むコンテナのスタイル */
+.chart-and-text-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+#chart-container {
+  flex-grow: 2; /* チャートがより多くのスペースを取るように設定 */
+  margin-right: 20px; /* 右のテキストコンテナとの間隔 */
+}
+
+.content-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#chart-container {
+  width: 70%;
   height: 100%;
+}
+
+#indicator-container {
+  width: 200px;
+  background-color: black; /* テクニカル指標の背景色 */
+  color: white; /* テクニカル指標の文字色 */
+  padding: 10px;
+  margin-left: 20px; /* チャートとの間隔 */
+  border-radius: 10px;
+}
+
+
+/* テクニカル指標のスタイル */
+.indicators-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.indicator {
+  border: 1px solid #ccc; /* 枠線 */
+  padding: 5%;
+  margin: 15%;
+  display: flex; 
+  align-items: center;
+  text-align: center;
+  border-radius: 5px;
+  position: relative;
+  right: 80%;
+}
+
+.indicator-name {
+  margin-right: 10px;
+  cursor: default;
+}
+
+/* 状態に応じた背景色 */
+.indicator.active {
+  background-color: green;
+  color: white; /* 文字色を白に設定 */
+}
+
+.indicator.inactive {
+  background-color: red;
+  color: white; /* 文字色を白に設定 */
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 520px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  margin-left: -540px;
+  border: 1px solid white;
+}
+
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.indicator:hover .tooltip {
+  visibility: visible;
+}
+
+.green{
+  color: green;
+}
+
+.red{
+  color: red;
 }

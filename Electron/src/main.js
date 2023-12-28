@@ -3,31 +3,69 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
 const { spawn } = require('child_process');
-
-
-let subprocess;
+const axios = require('axios');
+const { request } = require('http');
 
 function createWindow() {
-  // 新しいウィンドウを作成する
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), // セキュリティを考慮した設定
-      contextIsolation: true, // セキュリティを考慮した設定
-      nodeIntegration: false, // セキュリティを考慮した設定
-
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     }
   });
 
-  // index.htmlをロードする
   mainWindow.loadFile('index.html');
   mainWindow.maximize();
 
-  
-  // DevToolsを開く
-  mainWindow.webContents.openDevTools();
 }
+
+// BTCUSDTの現在価格を取得する関数
+async function getCurrentPrice() {
+  try {
+    var response = await axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+    return response.data.price;
+  } catch (error) {
+    console.error('価格の取得に失敗:', error);
+  }
+}
+
+// BTCUSDTの24時間前の価格を取得する関数
+async function getPreviousPrice() {
+  try {
+    var endTime = Date.now();
+    var startTime = endTime - 86400000;
+
+    var response = await axios.get(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=${startTime}&endTime=${endTime}`);
+    var previousDayData = response.data[0];
+    return previousDayData[1];
+  } catch (error) {
+    console.error('前日価格の取得に失敗:', error);
+  }
+}
+
+ipcMain.on('request-current-price', async (event) => {
+  var currentPrice = await getCurrentPrice();
+  var previousPrice = await getPreviousPrice();
+  var change = 0;
+
+  if (currentPrice && previousPrice) {
+    change = ((currentPrice - previousPrice) / previousPrice) * 100;
+  }
+
+  console.log('currentPrice: ', currentPrice);
+  console.log('previousPrice: ', previousPrice);
+  console.log('before raito: ', change);
+
+
+  event.reply('current-price',{
+    currentPrice: currentPrice,
+    previousPrice: previousPrice,
+    beforeRaito: change
+  });
+});
 
 ipcMain.on('request-csv-data', (event) => {
   const csvFilePath = path.join('D:/MarketMasterAI/Def/BTCUSDT_5T.csv');
@@ -36,10 +74,6 @@ ipcMain.on('request-csv-data', (event) => {
   const jst = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
   const jstFate = new Date(jst);
   const formatJST = formatDate(jstFate);
-
-
-
-  let targetData = null;
 
   fs.createReadStream(csvFilePath)
     .pipe(csv())
@@ -74,24 +108,30 @@ ipcMain.on('request-csv-data', (event) => {
 
 });
 
+ipcMain.on('request-indicators-data', (event) => {
+  const filePath = path.join('D:/MarketMasterAI/bin/Technical.json');
+  
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading indicators file:', err);
+      event.reply('response-indicators-data', { error: 'ファイル読み込みエラー' });
+    } else {
+      event.reply('response-indicators-data', JSON.parse(data));
+    }
+  });
+});
+
 app.whenReady().then(() => {
   //runExe('D:/MarketMasterAI/bin/getPrice_BTCUSDT_ochlv.exe');
   createWindow();
 });
 
 app.on('window-all-closed', function () {
-  // macOS以外では、ユーザーがCmd + Qで明示的に終了するまでアプリをアクティブに保つ
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  if (process.platform !== 'darwin') app.quit();
 });
 
-
-// アプリケーションがアクティブになったとき（macOSのみ）
 app.on('activate', function () {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
 function runExe(filePath){

@@ -30,23 +30,23 @@
       <div id="widget-container" class="widgets-continer">
         <div id="btcusdt-widget" class="widget">
           <div class="widget-header">BTCUSDT</div>
-          <div class="widget-price">40000</div>
-          <div class="widget-change">0.00%</div>
+          <div class="widget-price" id="BTCPrice">40000</div>
+          <div class="widget-change" id="BTCRaito">0.00%</div>
         </div>
         <div id="dummy1-widget" class="widget">
-          <div class="widget-header">dummy1</div>
-          <div class="widget-price">2070.56</div>
-          <div class="widget-change">0.89%</div>
+          <div class="widget-header">ETHUSDT</div>
+          <div class="widget-price" id="ETHPrice">2070.56</div>
+          <div class="widget-change" id="ETHRaito">0.89%</div>
         </div>
         <div id="dummy2-widget" class="widget">
-          <div class="widget-header">dummy2</div>
-          <div class="widget-price">1200000</div>
-          <div class="widget-change">100%</div>
+          <div class="widget-header">XRPUSDT</div>
+          <div class="widget-price" id="XRPPrice">1200000</div>
+          <div class="widget-change" id="XRPRaito">100%</div>
         </div>
         <div id="dummy3-widget" class="widget">
-          <div class="widget-header">dummy3</div>
-          <div class="widget-price">0.000000</div>
-          <div class="widget-change">0.00%</div>
+          <div class="widget-header">SOLUSDT</div>
+          <div class="widget-price" id="SOLPrice">0.000000</div>
+          <div class="widget-change" id="SOLRaito">0.00%</div>
         </div>
         <div id="dummy4-widget" class="widget">
           <div class="widget-header">dummy4</div>
@@ -146,7 +146,7 @@
             トレンドの強さを測定する指標で、<br>
             ADXラインが25以上であれば強いトレンドを示します。<br><br>
             <span class="green">緑（True）</span> : <br> ADXが25以上の場合（強いトレンドを示す）<br>
-            <span class="red">赤（False）</span>: <br> ADXが25以上の場合（強いトレンドを示す）<br>
+            <span class="red">赤（False）</span>: <br> ADXが25未満の場合（弱いまたはトレンドがない）<br>
           </span>
         </div>
         <div class="indicator" id="Stochastic-indicator">

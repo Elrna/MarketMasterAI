@@ -2,9 +2,125 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
-const { spawn } = require('child_process');
 const axios = require('axios');
-const { request } = require('http');
+
+const jPaths = "D:/MarketMasterAI/Def/Path.json";
+var filePaths = [];
+
+app.whenReady().then(() => {
+
+  filePaths = loadFilePathJson();
+  createWindow();
+
+});
+
+ipcMain.on('sBTCUSDT-current-price', async (event) => {
+  var [currentPrice, previousPrice] = await Promise.all([
+
+    getPriceData('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+    getPriceData(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=${Date.now() - 86400000}&endTime=${Date.now()}`)
+
+  ]);
+
+  currentPrice = currentPrice.price;
+  previousPrice = previousPrice[0][1];
+
+  event.reply('rBTCUSDT-current-price',{
+    currentPrice: currentPrice,
+    previousPrice: previousPrice,
+  });
+});
+
+ipcMain.on('sETHUSDT-current-price', async (event) => {
+  var [currentPrice, previousPrice] = await Promise.all([
+
+    getPriceData('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT'),
+    getPriceData(`https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=${Date.now() - 86400000}&endTime=${Date.now()}`)
+
+  ]);
+
+  currentPrice = currentPrice.price;
+  previousPrice = previousPrice[0][1];
+
+  event.reply('rETHUSDT-current-price',{
+    currentPrice: currentPrice,
+    previousPrice: previousPrice,
+  });
+});
+
+ipcMain.on('sXRPUSDT-current-price', async (event) => {
+  var [currentPrice, previousPrice] = await Promise.all([
+
+    getPriceData('https://api.binance.com/api/v3/ticker/price?symbol=XRPUSDT'),
+    getPriceData(`https://api.binance.com/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=${Date.now() - 86400000}&endTime=${Date.now()}`)
+
+  ]);
+
+  currentPrice = currentPrice.price;
+  previousPrice = previousPrice[0][1];
+
+  event.reply('rXRPUSDT-current-price',{
+    currentPrice: currentPrice,
+    previousPrice: previousPrice,
+  });
+});
+
+ipcMain.on('sSOLUSDT-current-price', async (event) => {
+  var [currentPrice, previousPrice] = await Promise.all([
+
+    getPriceData('https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT'),
+    getPriceData(`https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=1d&startTime=${Date.now() - 86400000}&endTime=${Date.now()}`)
+
+  ]);
+
+  currentPrice = currentPrice.price;
+  previousPrice = previousPrice[0][1];
+
+  event.reply('rSOLUSDT-current-price',{
+    currentPrice: currentPrice,
+    previousPrice: previousPrice,
+  });
+});
+
+ipcMain.on('request-indicators-data', (event) => {
+  
+  const filePath = filePaths.json_paths['Technical'];
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading indicators file:', err);
+      event.reply('response-indicators-data', { error: 'ファイル読み込みエラー' });
+    } else {
+      event.reply('response-indicators-data', JSON.parse(data));
+    }
+  });
+});
+
+ipcMain.on('request-path-list', (event) => {
+  event.reply('path-list', filePaths);
+});
+
+
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('activate', function () {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
+
+function loadFilePathJson(){
+  try{
+
+    const data = fs.readFileSync(jPaths, 'utf8');
+    return JSON.parse(data);
+
+  }catch(error){
+    console.error('Error reading indicators file:', error);
+    return null;
+  }
+}
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -22,117 +138,21 @@ function createWindow() {
 
 }
 
-// BTCUSDTの現在価格を取得する関数
-async function getCurrentPrice() {
+async function getPriceData(url) {
   try {
-    var response = await axios.get('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-    return response.data.price;
-  } catch (error) {
-    console.error('価格の取得に失敗:', error);
-  }
-}
-
-// BTCUSDTの24時間前の価格を取得する関数
-async function getPreviousPrice() {
-  try {
-    var endTime = Date.now();
-    var startTime = endTime - 86400000;
-
-    var response = await axios.get(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=${startTime}&endTime=${endTime}`);
-    var previousDayData = response.data[0];
-    return previousDayData[1];
-  } catch (error) {
-    console.error('前日価格の取得に失敗:', error);
-  }
-}
-
-ipcMain.on('request-current-price', async (event) => {
-  var currentPrice = await getCurrentPrice();
-  var previousPrice = await getPreviousPrice();
-  var change = 0;
-
-  if (currentPrice && previousPrice) {
-    change = ((currentPrice - previousPrice) / previousPrice) * 100;
-  }
-
-  console.log('currentPrice: ', currentPrice);
-  console.log('previousPrice: ', previousPrice);
-  console.log('before raito: ', change);
-
-
-  event.reply('current-price',{
-    currentPrice: currentPrice,
-    previousPrice: previousPrice,
-    beforeRaito: change
-  });
-});
-
-ipcMain.on('request-csv-data', (event) => {
-  const csvFilePath = path.join('D:/MarketMasterAI/Def/BTCUSDT_5T.csv');
-  const results = [];
-
-  const jst = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
-  const jstFate = new Date(jst);
-  const formatJST = formatDate(jstFate);
-
-  fs.createReadStream(csvFilePath)
-    .pipe(csv())
-    .on('data', (data) => {
-      results.push(data);
-    })
-    .on('end', () => {
-      
-      let lastData = results[results.length -1];
-      let targetData;
-      
-      results.forEach((data) => {
-        if(data.timestamp &&  data.timestamp.startsWith(formatJST)){
-          targetData = data;
-        }
-      });
-      /*
-      if(results.timestamp.startsWith(formatJST)){
-        targetData = data;
-        console.log('targetData: ', targetData);
-      }
-      */
-      event.reply('csv-data-response', {
-        lastClose: results ? lastData : 'No data found',
-        targetData: targetData ? targetData : 'No data found'
-      });
-    })
-    .on('error', (err) => {
-      console.log('CSV読み込みエラー: ', err);
-      event.reply('csv-data-error', 'CSV読み込みエラー');
-    });
-
-});
-
-ipcMain.on('request-indicators-data', (event) => {
-  const filePath = path.join('D:/MarketMasterAI/bin/Technical.json');
   
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading indicators file:', err);
-      event.reply('response-indicators-data', { error: 'ファイル読み込みエラー' });
-    } else {
-      event.reply('response-indicators-data', JSON.parse(data));
-    }
-  });
-});
+    const response = await axios.get(url);
 
-app.whenReady().then(() => {
-  //runExe('D:/MarketMasterAI/bin/getPrice_BTCUSDT_ochlv.exe');
-  createWindow();
-});
+    console.log('価格の取得に成功:', response.data);
+    return response.data;
+  
+  } catch (error) {
 
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
-});
+    console.error('価格の取得に失敗:', error);
 
-app.on('activate', function () {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
-});
+  }
+}
+
 
 function runExe(filePath){
     // 非同期処理で子プロセスを起動
@@ -173,15 +193,4 @@ function runExeSync(filePath){
 
   return result.status;
 
-}
-
-// フォーマットを'YYYY/MM/DD HH:MM'形式に変換する関数
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-
-  return `${year}/${month}/${day} ${hours}:${minutes}`;
 }

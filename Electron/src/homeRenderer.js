@@ -1,97 +1,94 @@
 
+document.addEventListener('DOMContentLoaded', function() {
+    setupNavigation();
+    initializeContentSections();
+    setupCryptoWidgets();
+    startWidgetUpdateInterval();
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-    
+
+function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     const contentSections = document.querySelectorAll('.content-section');
 
-    const btc_widgetPrice =  document.getElementById('BTCPrice');
-    const btc_changeIndicator = document.getElementById('BTCRaito');
-    const eth_widgetPrice = document.getElementById('ETHPrice');
-    const eth_changeIndicator = document.getElementById('ETHRaito');
-    const xrp_widgetPrice = document.getElementById('XRPPrice');
-    const xrp_changeIndicator = document.getElementById('XRPRaito');
-    const sol_widgetPrice = document.getElementById('SOLPrice');
-    const sol_changeIndicator = document.getElementById('SOLRaito');
-
-
-    contentSections.forEach(section => {
-        section.style.display = 'none';
-    });
-
     navItems.forEach(item => {
         item.addEventListener('click', function() {
-
-            contentSections.forEach(section => {
-                section.style.display = 'none';
-            });
-
-            const contentId = 'content-' + this.id;
-            const activeContent = document.getElementById(contentId);
-            console.log(activeContent);
-
-            if(activeContent) {
-                activeContent.style.display = 'block';
-            }
-
-            navItems.forEach(nav => nav.classList.remove('active-nav-item'));
-            this.classList.add('active-nav-item');
+            toggleContentSections(contentSections, this);
+            toggleActiveNavItem(navItems, this);
         });
     });
+
+    setActiveContentAndNavItem('home');
+
+}
+
+function initializeContentSections() {
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => section.style.display = 'none');
 
     const homeContent = document.getElementById('content-home');
     if (homeContent) {
         homeContent.classList.add('visible');
         homeContent.style.display = 'block';
     }
-    const homeItem = document.getElementById('home');
-    if (homeItem) {
-        homeItem.classList.add('active-nav-item');
+
+}
+
+function toggleContentSections(contentSections, clickedItem) {
+    contentSections.forEach(section => {
+        section.style.display = 'none';
+    })
+
+    const activeSection = document.getElementById('content-' + clickedItem.id);
+    if(activeSection) {
+        activeSection.style.display = 'block';
     }
+}
 
-    window.electronAPI.sendData('sBTCUSDT-current-price');
+function toggleActiveNavItem(navItems, activeItem) {
+    navItems.forEach(nav => nav.classList.remove('active-nav-item'));
+    activeItem.classList.add('active-nav-item');
+}
 
-    window.electronAPI.receiveData('rBTCUSDT-current-price', (data) => {
+function setActiveContentAndNavItem(itemId) {
+    const content = document.getElementById('content-' + itemId);
+    const item = document.getElementById(itemId);
 
-        var currentPrice = data.currentPrice;
-        var previousPrice = data.previousPrice;
+    if (content) {
+        content.style.display = 'block';
+    }
+    if (item) {
+        item.classList.add('active-nav-item');
+    }
+}
 
-        updateWidget(currentPrice, previousPrice, btc_widgetPrice, btc_changeIndicator);
-    });
+function setupCryptoWidgets() {
+    const cryptoData = [
+        { symbol: 'BTC', widgetPrice: 'BTCPrice', widgetChange: 'BTCRaito' },
+        { symbol: 'ETH', widgetPrice: 'ETHPrice', widgetChange: 'ETHRaito' },
+        { symbol: 'XRP', widgetPrice: 'XRPPrice', widgetChange: 'XRPRaito' },
+        { symbol: 'SOL', widgetPrice: 'SOLPrice', widgetChange: 'SOLRaito' }
+    ];
 
-    window.electronAPI.sendData('sETHUSDT-current-price');
-
-    window.electronAPI.receiveData('rETHUSDT-current-price', (data) => {
-
-        var currentPrice = data.currentPrice;
-        var previousPrice = data.previousPrice;
+    cryptoData.forEach(({ symbol, widgetPrice, widgetChange }) => {
+        const priceElement= document = document.getElementById(widgetPrice);
+        const changeElement = document.getElementById(widgetChange);
         
-        updateWidget(currentPrice, previousPrice, eth_widgetPrice, eth_changeIndicator);
 
+        window.electronAPI.sendData('s' + symbol + 'USDT-current-price');
+        window.electronAPI.receiveData('r' + symbol + 'USDT-current-price', (data) => {
+            updateWidget(data.currentPrice, data.previousPrice, priceElement, changeElement);
+        });
     });
+}
 
-    window.electronAPI.sendData('sXRPUSDT-current-price');
+function startWidgetUpdateInterval(){
+    const updateInterval = 60000;
 
-    window.electronAPI.receiveData('rXRPUSDT-current-price', (data) => {
-
-        var currentPrice = data.currentPrice;
-        var previousPrice = data.previousPrice;
-        
-        updateWidget(currentPrice, previousPrice, xrp_widgetPrice, xrp_changeIndicator);
-
-    });
-
-    window.electronAPI.sendData('sSOLUSDT-current-price');
-
-    window.electronAPI.receiveData('rSOLUSDT-current-price', (data) => {
-
-        var currentPrice = data.currentPrice;
-        var previousPrice = data.previousPrice;
-        
-        updateWidget(currentPrice, previousPrice, sol_widgetPrice, sol_changeIndicator);
-
-    });
-});
+    setInterval(() => {
+        setupCryptoWidgets();
+    }, updateInterval);
+}
 
 function updateWidget(currentPrice, previousPrice, widgetPrice, widgetChange) {
 

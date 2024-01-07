@@ -4,13 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "axios": "^1.6.4",
-=======
->>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
-=======
->>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
     "boolean": "^3.2.0",
     "buffer-crc32": "^0.2.13",
     "cacheable-lookup": "^5.0.4",

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 document.addEventListener('DOMContentLoaded', function() {
     setupNavigation();
@@ -176,6 +177,8 @@ window.electronAPI.receiveData('response-news-data', (data) => {
 });
 
 =======
+=======
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
 
 document.addEventListener('DOMContentLoaded', function() {
     setupNavigation();
@@ -298,5 +301,9 @@ function updateWidget(currentPrice, previousPrice, widgetPrice, widgetChange) {
             }
         }
     }    
+<<<<<<< HEAD
+}
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
+=======
 }
 >>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555

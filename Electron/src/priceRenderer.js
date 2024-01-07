@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -71,6 +72,8 @@ function updateIndicatorsStatus(data) {
   }
 }
 =======
+=======
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -142,4 +145,7 @@ function updateIndicatorsStatus(data) {
     }
   }
 }
+<<<<<<< HEAD
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
+=======
 >>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555

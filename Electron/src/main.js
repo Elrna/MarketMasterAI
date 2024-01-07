@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const fs = require('fs');
 const axios = require('axios');
@@ -171,6 +172,8 @@ function continuouslyRunExe(filePath, interval) {
       .catch(err => console.error('Execution failed:', err));*/
   }, interval);
 =======
+=======
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -366,5 +369,8 @@ function runExeSync(filePath){
 
   return result.status;
 
+<<<<<<< HEAD
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
+=======
 >>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
 }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -10,6 +11,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }
 });
 =======
+=======
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -20,4 +23,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on(channel, (_, data) => func(data));
   }
 });
+<<<<<<< HEAD
+>>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555
+=======
 >>>>>>> 7c0f11edcfe2c5065551d8214761ecb4cc2be555

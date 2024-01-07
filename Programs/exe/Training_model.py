@@ -6,7 +6,37 @@ import pandas as pd
 from keras.models import load_model, Sequential
 from keras.layers import Dense, LSTM, Dropout
 
+import matplotlib.pyplot as plt
 
+with open('D:\MarketMasterAI\Def\Path.json', 'r') as file:
+    paths = json.load(file)
+    log_path = paths['log_paths']['Training_model']
+    model_paths = paths['model_paths']['4hr_model_save']
+    train_datas = paths['csv_paths']['4hr_training']
+    timestamp_json = paths["json_paths"]["Last_timestamp"]
+    config_path = paths["json_paths"]["LSTM_config"]
+
+logging.basicConfig(filename=log_path,
+                    level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
+
+def plot_learning_curve(history):
+    """
+    学習曲線（損失と検証損失）を描画する関数
+    """
+    plt.figure(figsize=(8, 5))
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show(block=True)  # ユーザが閉じるボタンを押すまで表示を続ける
+
+def load_config():
+    with open(config_path, 'r') as file:
+        config = json.load(file)
+    return config
 
 def LSTM_model(x_train, y_train):
     """
@@ -18,19 +48,26 @@ def LSTM_model(x_train, y_train):
         訓練済みモデル
     """
     try:
-        model = Sequential()
-        model.add(LSTM(units=50, return_sequences=True, input_shape=(x_train.shape[1], 4)))
-        model.add(Dropout(0.2))
-        model.add(LSTM(units=50, return_sequences=True))
-        model.add(Dropout(0.2))
-        model.add(LSTM(units=50, return_sequences=True))
-        model.add(Dropout(0.2))
-        model.add(LSTM(units=50))
-        model.add(Dropout(0.2))
-        model.add(Dense(units=1))
-        model.compile(optimizer='adam', loss='mean_squared_error')
 
-        history = model.fit(x_train, y_train, batch_size=32, epochs=100, validation_split=0.2)
+        config = load_config()
+
+        model = Sequential()
+        model.add(LSTM(units=config['lstm_units'], return_sequences=True,
+                        input_shape=(x_train.shape[1], x_train.shape[2])))
+        model.add(Dropout(config['dropout_rate']))
+        model.add(LSTM(units=config['lstm_units'], return_sequences=True))
+        model.add(Dropout(config['dropout_rate']))
+        model.add(LSTM(units=config['lstm_units'], return_sequences=True))
+        model.add(Dropout(config['dropout_rate']))
+        model.add(LSTM(units=config['lstm_units']))
+        model.add(Dropout(config['dropout_rate']))
+        model.add(Dense(units=1))
+        model.compile(optimizer=config['optimizer'], loss=config['loss'])
+
+        history = model.fit(x_train, y_train, batch_size=config['batch_size'],
+                            epochs=config['epochs'], validation_split=config['validation_split'])
+
+        plot_learning_curve(history)
 
         final_loss = history.history['loss'][-1]
         final_val_loss = history.history['val_loss'][-1]
@@ -175,56 +212,18 @@ def save_last_timestamp(timestamp, json_path):
 
 def main():
     try:
-        with open('D:\MarketMasterAI\Def\Path.json', 'r') as file:
-            paths = json.load(file)
-            log_path = paths['log_paths']['Training_model']
-            model_paths = [ paths['model_paths']['5min_model_save'],
-                            paths['model_paths']['15min_model_save'],
-                            paths['model_paths']['30min_model_save'],
-                            paths['model_paths']['1hr_model_save'],
-                            paths['model_paths']['4hr_model_save'],
-                            paths['model_paths']['1d_model_save'],]
 
-            train_datas = [ paths['csv_paths']['5min_training'],
-                            paths['csv_paths']['15min_training'],
-                            paths['csv_paths']['30min_training'],
-                            paths['csv_paths']['1hr_training'],
-                            paths['csv_paths']['4hr_training'],
-                            paths['csv_paths']['1d_training'],]
-
-            retrain_datas = [   paths['csv_paths']['5min_retrain'],
-                                paths['csv_paths']['15min_retrain'],
-                                paths['csv_paths']['30min_retrain'],
-                                paths['csv_paths']['1hr_retrain'],
-                                paths['csv_paths']['4hr_retrain'],
-                                paths['csv_paths']['1d_retrain'],]
-
-            timestamp_json = paths["json_paths"]["Last_timestamp"]
-
-
-        logging.basicConfig(filename=log_path,
-                            level=logging.INFO,
-                            format='%(asctime)s:%(levelname)s:%(message)s')
         models = []
 
-        for i, model_path in enumerate(model_paths):
-            if model_exists(model_path):
-                x_train, y_train = create_training_data(retrain_datas[i])
-                model = loading_model(model_path)
-                retrained_model = retrain_model(model, x_train, y_train)
-                models.append(retrained_model)
-                last_timestamp = get_last_timestamp(retrain_datas[i])
-                save_last_timestamp(last_timestamp, timestamp_json)
-            else:
-                x_train, y_train = create_training_data(train_datas[i])
-                model = LSTM_model(x_train, y_train)
-                models.append(model)
-                last_timestamp = get_last_timestamp(train_datas[i])
-                save_last_timestamp(last_timestamp, timestamp_json)
+        x_train, y_train = create_training_data(train_datas)
+        model = LSTM_model(x_train, y_train)
+        models.append(model)
+        last_timestamp = get_last_timestamp(train_datas)
+        save_last_timestamp(last_timestamp, timestamp_json)
 
         # 学習済みモデルの保存
-        for i, model in enumerate(models):
-            save_Trained_model(model, model_paths[i])
+
+        save_Trained_model(model, model_paths)
 
         logging.info("Main function executed successfully.")
 

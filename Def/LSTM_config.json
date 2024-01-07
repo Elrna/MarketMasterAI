@@ -1,0 +1,9 @@
+{
+    "lstm_units": 50,
+    "dropout_rate": 0.2,
+    "batch_size": 256,
+    "epochs": 100,
+    "validation_split": 0.2,
+    "optimizer": "adam",
+    "loss": "mean_squared_error"
+}

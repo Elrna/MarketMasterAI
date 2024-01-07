@@ -50,7 +50,10 @@ def read_csv(file_path):
     CSVファイルを読み込む。
     """
     try:
-        data = pd.read_csv(file_path, index_col='timestamp', parse_dates=True)
+        data = pd.read_csv(file_path, index_col='timestamp', dtype={'timestamp': 'object'})
+
+        data.index = pd.to_datetime(data.index, format='%Y/%m/%d %H:%M')
+
         logging.info("CSVファイルの読み込みに成功しました。")
         return data
     except Exception as e:
@@ -84,8 +87,7 @@ def main():
     intervals = ['5T', '15T', '30T', '1H', '4H', '1D']
     try:
         for interval in intervals:
-            process_and_standardize_data(paths['csv_paths']['5min_BTC_price'], interval, paths['file']['Def'], stand.standardize_and_save_csv)
-            process_and_standardize_data(paths['csv_paths']['5min_retrain'], interval, paths['file']['Def'], stand.retrain_standardize_and_save_csv, is_retrain=True)
+            process_and_standardize_data(paths['csv_paths']['clean_BTC_price'], interval, paths['file']['Def'], stand.standardize_and_save_csv)
 
         logging.info("すべての間隔でのデータ処理と標準化が完了しました。")
     except Exception as e:

@@ -247,6 +247,7 @@ nav ul li:hover {
   border-radius: 5px;
   position: relative;
   flex: 1;
+  margin-left: 30%;
 }
 
 .indicator-name {
@@ -274,7 +275,7 @@ nav ul li:hover {
   padding: 5px 0;
   position: absolute;
   z-index: 1;
-  margin-left: -540px;
+  margin-top: 300px;
   border: 1px solid white;
 }
 

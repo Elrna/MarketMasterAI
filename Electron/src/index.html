@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="Loading.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
@@ -57,7 +59,7 @@
         <div id="dummy5-widget" class="widget">
           <div class="widget-header">JPY/USDT</div>
           <div class="widget-price" id="JPYPrice">0.000000</div>
-          <div class="widget-change" id="JPYRaito">0.00%</div>
+          <div class="widget-change" id="JPYRaito" style="display: none;">0.00%</div>
         </div>
       </div>
 
@@ -167,12 +169,17 @@
 
     <!-- Autoコンテンツ -->
     <div id="content-auto" class="content-section">
-      Auto Content
+      <div class="arc">
+      </div>
+      <h1><span id="Loading">LOADING</span></h1>
     </div>
 
     <!-- Portfolioコンテンツ -->
     <div id="content-portfolio" class="content-section">
-      Portfolio Content
+  
+      <div class="arc">
+      </div>
+      <h1><span id="Loading">LOADING</span></h1>
     </div>
 
     <script src="homeRenderer.js"></script>

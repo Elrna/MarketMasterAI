@@ -3,6 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 const csv = require('csv-parser');
+const { exec } = require('child_process');
 
 
 const jPaths = "D:/MarketMasterAI/Def/Path.json";
@@ -24,7 +25,7 @@ ipcMain.on('request-path-list', (event) => {
 });
 
 ipcMain.on('request-news-data', (event) => {
-  
+  runExe("D:/MarketMasterAI/bin/getNews.exe");
   console.log('request news data')
   fs.readFile(filePaths.json_paths['News'], 'utf8', (err, data) => {
     if (err) {
@@ -51,6 +52,22 @@ ipcMain.on('request-LSTM_output', (event) => {
     }
   });
 });
+
+ipcMain.on('sJPYUSDT-current-price', (event) => {
+    let currentPrice = 0;
+    let previousPrice = 0;
+
+    getUsdJpyRate().then(result => {
+      currentPrice = result.currentRate;
+      previousPrice = result.difference;
+      console.log('currentPrice: ', currentPrice);
+      console.log('previousPrice: ', previousPrice);
+
+      event.reply('rJPYUSDT-current-price', { currentPrice, previousPrice });
+    })
+});
+
+
 
 
 app.on('window-all-closed', () => {
@@ -142,25 +159,14 @@ function readCSV(event, replyChannel) {
 }
 
 function runExe(filePath){
-    // 非同期処理で子プロセスを起動
-    const child = spawn(filePath);
-    console.log('exe prosecc start.');
-
-    child.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-    });
-  
-    child.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-    });
-  
-    child.on('close', (code) => {
-      console.log(`child process exited with code ${code}`);
-    });
-  
-    child.on('error', (err) => {
-      console.error('Failed to start subprocess.', err);
-    });
+  exec(filePath, (error, stdout, stderr) => {
+    if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+});
 }
 
 function continuouslyRunExe(filePath, interval) {
@@ -169,4 +175,22 @@ function continuouslyRunExe(filePath, interval) {
       .then(code => console.log(`Execution completed with code: ${code}`))
       .catch(err => console.error('Execution failed:', err));*/
   }, interval);
+}
+
+async function getUsdJpyRate() {
+  const url = 'https://api.exchangerate-api.com/v4/latest/USD'; // このURLは架空のものです。実際のAPIエンドポイントに置き換えてください。
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const currentRate = data.rates.JPY; // 現在のUSD/JPYレート
+      const previousRate = data.rates.JPY; // 前日のUSD/JPYレート。実際には前日のレートを取得する必要があります。
+
+      const difference = currentRate - previousRate; // 前日比
+
+      return { currentRate, difference };
+  } catch (error) {
+      console.error('Error fetching exchange rate data:', error);
+      return null;
+  }
 }

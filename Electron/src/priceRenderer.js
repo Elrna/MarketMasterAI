@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     script.onload = () => {
       new TradingView.widget({
         "container_id": priceChartElement.id,
-        "width": '70%',
+        "width": '100%',
         "height": chartHeight,
         "symbol": "ByBit:BTCUSDT",
         "interval": "60",
